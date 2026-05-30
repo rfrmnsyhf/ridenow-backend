@@ -15,6 +15,7 @@ model User {
   role       String    @default("customer")
   rentals    Rental[]
   createdAt  DateTime  @default(now())
+  paymentMethods PaymentMethod[]
 }
 
 model Vehicle {
@@ -41,4 +42,23 @@ model Rental {
 
   user        User      @relation(fields: [userId], references: [id])
   vehicle     Vehicle   @relation(fields: [vehicleId], references: [id])
+}
+
+model PaymentMethod {
+
+  id           Int      @id @default(autoincrement())
+
+  userId       Int
+
+  type         String
+  provider     String
+  accountName  String
+  accountNo    String
+
+  isDefault    Boolean  @default(false)
+
+  createdAt    DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
 }

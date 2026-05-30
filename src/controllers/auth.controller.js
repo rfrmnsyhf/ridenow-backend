@@ -57,22 +57,62 @@ class AuthController {
   }
 
   async me(req, res) {
+
     try {
+
+      const user =
+        await authService.getProfile(
+          req.user.id
+        );
+
       return successResponse(
         res,
         "Get profile success",
-        {
-          id: 1,
-          fullname: "Firmansyah",
-          email: "firman@gmail.com",
-          role: "customer"
-        }
+        user
       );
+
     } catch (error) {
+
       return errorResponse(
         res,
         error.message
       );
+
+    }
+  }
+
+  async updateProfile(req, res) {
+
+    try {
+
+      const user =
+        await authService.updateProfile(
+
+          req.user.id,
+
+          {
+            fullname:
+              req.body.fullname,
+
+            email:
+              req.body.email,
+          }
+
+        );
+
+      return successResponse(
+        res,
+        "Profile updated",
+        user
+      );
+
+    } catch (error) {
+
+      return errorResponse(
+        res,
+        error.message
+      );
+
     }
   }
 

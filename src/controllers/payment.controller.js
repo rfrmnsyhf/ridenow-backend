@@ -1,38 +1,30 @@
-const rentalService = require('../services/rental.service');
+const paymentService =
+require('../services/payment.service');
 
 const {
   successResponse,
   errorResponse
 } = require('../utils/response');
 
-class RentalController {
+class PaymentController {
+
   async create(req, res) {
+
     try {
 
-      const rental =
-        await rentalService.create({
+      const payment =
+        await paymentService.create(
 
-          userId:
-            req.user.id,
+          req.user.id,
 
-          vehicleId:
-            req.body.vehicleId,
+          req.body
 
-          startDate:
-            req.body.startDate,
-
-          endDate:
-            req.body.endDate,
-
-          totalPrice:
-            req.body.totalPrice,
-
-        });
+        );
 
       return successResponse(
         res,
-        'Rental created',
-        rental,
+        'Payment method created',
+        payment,
         201
       );
 
@@ -47,80 +39,107 @@ class RentalController {
   }
 
   async getAll(req, res) {
+
     try {
-      const rentals =
-        await rentalService.getAll();
+
+      const payments =
+        await paymentService.getAll(
+          req.user.id
+        );
 
       return successResponse(
         res,
-        'Rental list',
-        rentals
+        'Payment methods',
+        payments
       );
+
     } catch (error) {
+
       return errorResponse(
         res,
         error.message
       );
+
     }
   }
 
   async getById(req, res) {
+
     try {
-      const rental =
-        await rentalService.getById(
+
+      const payment =
+        await paymentService.getById(
           req.params.id
         );
 
       return successResponse(
         res,
-        'Rental detail',
-        rental
+        'Payment detail',
+        payment
       );
+
     } catch (error) {
+
       return errorResponse(
         res,
         error.message
       );
+
+    }
+  }
+
+  async update(req, res) {
+
+    try {
+
+      const payment =
+        await paymentService.update(
+
+          req.params.id,
+
+          req.body
+
+        );
+
+      return successResponse(
+        res,
+        'Payment updated',
+        payment
+      );
+
+    } catch (error) {
+
+      return errorResponse(
+        res,
+        error.message
+      );
+
     }
   }
 
   async delete(req, res) {
+
     try {
-      await rentalService.delete(
+
+      await paymentService.delete(
         req.params.id
       );
 
       return successResponse(
         res,
-        'Rental deleted'
+        'Payment deleted'
       );
+
     } catch (error) {
+
       return errorResponse(
         res,
         error.message
       );
-    }
-  }
 
-  async updateStatus(req, res) {
-    try {
-      const rental = await rentalService.updateStatus(
-        req.params.id,
-        req.body.status
-      );
-
-      return successResponse(
-        res,
-        "Rental updated",
-        rental
-      );
-    } catch (error) {
-      return errorResponse(
-        res,
-        error.message
-      );
     }
   }
 }
 
-module.exports = new RentalController();
+module.exports =
+new PaymentController();

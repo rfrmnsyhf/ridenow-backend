@@ -4,7 +4,12 @@ const { generateToken } = require('../utils/token');
 
 class AuthService {
   async register(data) {
-    const { fullname, email, password } = data;
+    const {
+      fullname,
+      email,
+      password,
+      role
+    } = data;
 
     const existingUser = await prisma.user.findUnique({
       where: {
@@ -26,6 +31,9 @@ class AuthService {
         fullname,
         email,
         password: hashedPassword,
+
+        role:
+          role || "customer",
       },
     });
 
@@ -67,6 +75,49 @@ class AuthService {
       token
     };
   }
+
+  async getProfile(userId) {
+
+  return await prisma.user.findUnique({
+
+    where: {
+      id: userId,
+    },
+
+    select: {
+      id: true,
+      fullname: true,
+      email: true,
+      role: true,
+      createdAt: true,
+    },
+
+  });
+}
+
+async updateProfile(userId, data) {
+
+  return await prisma.user.update({
+
+    where: {
+      id: userId,
+    },
+
+    data: {
+      fullname: data.fullname,
+      email: data.email,
+    },
+
+    select: {
+      id: true,
+      fullname: true,
+      email: true,
+      role: true,
+      createdAt: true,
+    },
+
+  });
+}
 }
 
 module.exports = new AuthService();
