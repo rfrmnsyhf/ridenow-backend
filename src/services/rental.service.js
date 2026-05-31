@@ -25,6 +25,51 @@ class RentalService {
   }
 
   async getAll() {
+    const expiredRentals =
+      await prisma.rental.findMany({
+
+        where: {
+
+          status: {
+            not: "completed"
+          },
+
+          endDate: {
+            lt: new Date()
+          }
+
+        }
+
+      });
+
+    for (const rental of expiredRentals) {
+
+      await prisma.rental.update({
+
+        where: {
+          id: rental.id
+        },
+
+        data: {
+          status: "completed"
+        }
+
+      });
+
+      await prisma.vehicle.update({
+
+        where: {
+          id: rental.vehicleId
+        },
+
+        data: {
+          status: "available"
+        }
+
+      });
+
+    }
+
     return await prisma.rental.findMany({
       orderBy: {
         createdAt: 'desc'

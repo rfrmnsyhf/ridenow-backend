@@ -15,3 +15,8 @@ app.use(
   '/api/payments',
   paymentRoutes
 );
+
+app.use(
+  "/api/users",
+  require("./src/routes/user.routes")
+);

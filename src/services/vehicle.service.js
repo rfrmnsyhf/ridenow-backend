@@ -29,10 +29,24 @@ class VehicleService {
   }
 
   async delete(id) {
-    return await prisma.vehicle.delete({
+
+    const vehicleId =
+      Number(id);
+
+    await prisma.rental.deleteMany({
+
       where: {
-        id: Number(id)
+        vehicleId
       }
+
+    });
+
+    return await prisma.vehicle.delete({
+
+      where: {
+        id: vehicleId
+      }
+
     });
   }
 }
